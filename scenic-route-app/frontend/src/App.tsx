@@ -45,7 +45,7 @@ const App = () => {
           <TravelPlanner setResponseData={setResponseData} />
         </div>
         <div className="row-span-1 col-span-2 bg-red-700">
-          <Map />
+          <Map locationInfo={responseData}/>
         </div>
         <div className="row-span-1 col-span-2 bg-slate-400">
           {/* List of stops */}

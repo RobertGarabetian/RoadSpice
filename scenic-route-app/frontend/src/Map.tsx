@@ -6,7 +6,7 @@ declare global {
     google: any;
   }
 }
-function Map() {
+function Map(locationInfo) {
   const mapRef = useRef<HTMLDivElement>(null);
   const apiKEY = import.meta.env.VITE_GOOGLE_MAPS_API;
   useEffect(() => {
