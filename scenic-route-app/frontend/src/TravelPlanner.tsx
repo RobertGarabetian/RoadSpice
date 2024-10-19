@@ -36,9 +36,7 @@ export default function TravelPlanner({ setResponseData }: any) {
 
   const apiKey = import.meta.env.GEMINI_API; // Make sure to set your API key in your .env file
 
-  const genAI = new GoogleGenerativeAI(
-    "AIzaSyDUhyC55AQksJP2VCKAA9w22QSSo0uN920"
-  );
+  const genAI = new GoogleGenerativeAI(apiKey);
 
   const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
