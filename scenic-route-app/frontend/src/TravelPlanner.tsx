@@ -48,7 +48,11 @@ export default function TravelPlanner({ setResponseData }: any) {
             {
               "name": "Stop Name",
               "description": "Description of the stop.",
-              "willingness_score": number
+              "willingness_score": number,
+              "coordinates": {
+                "lat": number,
+                "long": number
+              }
             },
             // ... more stops ...
           ]
