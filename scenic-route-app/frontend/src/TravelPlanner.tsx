@@ -61,15 +61,6 @@ export default function TravelPlanner({ setResponseData }: any) {
 
     try {
       setLoading(true);
-      const chatSession = model.startChat({
-        generationConfig,
-        history: [
-          {
-            role: "user",
-            parts: [{ text: "say hi" }],
-          },
-        ],
-      });
 
       const result = await model.generateContent(
         `Hello! I am traveling from ${departureCity}, ${departureState} to ${arrivalCity}, ${arrivalState} by car. On a scale of 1 to 100, 100 being the most willing and 1 being the least willing to go out of my way for the scenic stops, I am at a ${scale}. Please provide a list of stops along the way, each with a short description, formatted as JSON. Use the following structure:
@@ -79,7 +70,11 @@ export default function TravelPlanner({ setResponseData }: any) {
             {
               "name": "Stop Name",
               "description": "Description of the stop.",
-              "willingness_score": number
+              "willingness_score": number,
+              "coordinates": {
+                "lat": number,
+                "long": number
+              }
             },
             // ... more stops ...
           ]
