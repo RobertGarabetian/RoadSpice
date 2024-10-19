@@ -4,6 +4,7 @@ function App() {
   return (
     <div className="App w-screen">
       <TravelPlanner />
+      <div></div>
     </div>
   );
 }
