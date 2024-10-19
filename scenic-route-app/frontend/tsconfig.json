@@ -9,6 +9,6 @@
     "paths": {
       "@/*": ["frontend/src/*"]
     },
-    "types": ["vite/client", "google.maps"]
+    "types": ["vite/client", "google.maps","node"]
   }
 }
