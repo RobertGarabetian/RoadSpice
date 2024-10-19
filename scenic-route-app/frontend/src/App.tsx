@@ -5,6 +5,7 @@
 //   initializeMap,
 //   getShortestRoute,
 // } from "../../backend/maps";
+import { Map } from "./Map";
 import { useState } from "react";
 import TravelPlanner from "./TravelPlanner";
 import StopsList from "./StopsList";
@@ -42,20 +43,9 @@ const App = () => {
       <div className="grid grid-cols-3 grid-rows-2">
         <div className="col-span-1 row-span-2">
           <TravelPlanner setResponseData={setResponseData} />
-          {/* <button
-            onClick={handleGetRoute}
-            className="mt-4 p-2 bg-blue-500 text-white"
-          >
-            Get Route
-          </button> */}
         </div>
         <div className="row-span-1 col-span-2 bg-red-700">
-          {/* <div
-            id="map"
-            ref={mapRef}
-            className="col-span-1 row-span-1 bg-slate-400"
-            style={{ height: "100vh", width: "100%" }}
-          ></div> */}
+          <Map />
         </div>
         <div className="row-span-1 col-span-2 bg-slate-400">
           {/* List of stops */}
