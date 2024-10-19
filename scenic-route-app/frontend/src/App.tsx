@@ -9,6 +9,7 @@ import { Map } from "./Map";
 import { useState } from "react";
 import TravelPlanner from "./TravelPlanner";
 import StopsList from "./StopsList";
+import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 interface ResponseData {
   stops: Stop[];
 }
@@ -39,17 +40,35 @@ const App = () => {
   // };
 
   return (
-    <div className="App w-screen">
-      <div className="grid grid-cols-3 grid-rows-2">
-        <div className="col-span-1 row-span-2">
-          <TravelPlanner setResponseData={setResponseData} />
-        </div>
-        <div className="row-span-1 col-span-2 bg-red-700">
-          <Map locationInfo={responseData}/>
-        </div>
-        <div className="row-span-1 col-span-2 bg-slate-400">
-          {/* List of stops */}
-          <StopsList responseData={responseData} />
+    <div className="min-h-screen bg-background text-foreground w-screen">
+      <div className="container mx-auto p-4">
+        <h1 className="text-4xl font-bold mb-6">Travel Route Planner</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-1">
+            <Card className="h-auto">
+              <CardContent>
+                <TravelPlanner setResponseData={setResponseData} />
+              </CardContent>
+            </Card>
+          </div>
+          <div className="md:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Route Map</CardTitle>
+              </CardHeader>
+              <CardContent className="h-auto">
+                <Map locationInfo={responseData} />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Stops List</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <StopsList responseData={responseData} />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
