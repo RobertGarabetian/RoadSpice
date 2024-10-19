@@ -6,11 +6,12 @@ interface Stop {
 
 export default function StopsList({ responseData }: any) {
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <h2 className="text-3xl font-semibold mb-4">Suggested Stops</h2>
+
       {/* Display the stops if responseData is available */}
       {responseData && responseData.stops && (
-        <div className="w-full max-w-md mt-6">
-          <h2 className="text-xl font-semibold mb-4">Suggested Stops:</h2>
+        <div className="w-full h-full flex flex-row gap-3">
           {responseData.stops.map((stop: any, index: number) => (
             <StopCard
               key={index}

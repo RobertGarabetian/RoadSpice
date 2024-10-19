@@ -34,7 +34,7 @@ export default function TravelPlanner({ setResponseData }: any) {
   const [speedPreference, setSpeedPreference] = useState(50);
   const [loading, setLoading] = useState(false);
 
-  const apiKey = import.meta.env.GEMINI_API; // Make sure to set your API key in your .env file
+  const apiKey: string = import.meta.env.VITE_GEMINI_API; // Make sure to set your API key in your .env file
 
   const genAI = new GoogleGenerativeAI(apiKey);
 
@@ -52,7 +52,6 @@ export default function TravelPlanner({ setResponseData }: any) {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-
     const scale = speedPreference;
 
     if (!departureCity || !departureState || !arrivalCity || !arrivalState) {
