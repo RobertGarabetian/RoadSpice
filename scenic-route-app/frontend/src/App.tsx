@@ -1,10 +1,3 @@
-// src/App.jsx
-// import React, { useEffect, useRef } from "react";
-// import {
-//   loadGoogleMapsScript,
-//   initializeMap,
-//   getShortestRoute,
-// } from "../../backend/maps";
 import { Map } from "./Map";
 import { useState } from "react";
 import TravelPlanner from "./TravelPlanner";
