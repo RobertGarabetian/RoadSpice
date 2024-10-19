@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "./components/ui/card";
@@ -11,20 +10,7 @@ import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import { Slider } from "./components/ui/slider";
 import { Button } from "./components/ui/button";
-import {
-  EnhancedGenerateContentResponse,
-  GoogleGenerativeAI,
-} from "@google/generative-ai";
-
-interface Stop {
-  name: string;
-  description: string;
-  willingness_score: number;
-}
-
-interface ResponseData {
-  stops: Stop[];
-}
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function TravelPlanner({ setResponseData }: any) {
   const [departureCity, setDepartureCity] = useState("");
@@ -42,14 +28,6 @@ export default function TravelPlanner({ setResponseData }: any) {
     model: "gemini-1.5-flash",
   });
 
-  const generationConfig = {
-    temperature: 1,
-    topP: 0.95,
-    topK: 64,
-    maxOutputTokens: 8192,
-    responseMimeType: "application/json",
-  };
-
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const scale = speedPreference;
@@ -61,15 +39,6 @@ export default function TravelPlanner({ setResponseData }: any) {
 
     try {
       setLoading(true);
-      const chatSession = model.startChat({
-        generationConfig,
-        history: [
-          {
-            role: "user",
-            parts: [{ text: "say hi" }],
-          },
-        ],
-      });
 
       const result = await model.generateContent(
         `Hello! I am traveling from ${departureCity}, ${departureState} to ${arrivalCity}, ${arrivalState} by car. On a scale of 1 to 100, 100 being the most willing and 1 being the least willing to go out of my way for the scenic stops, I am at a ${scale}. Please provide a list of stops along the way, each with a short description, formatted as JSON. Use the following structure:
@@ -182,18 +151,6 @@ export default function TravelPlanner({ setResponseData }: any) {
           </form>
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-function StopCard({ name, description, willingness_score }: Stop) {
-  return (
-    <div className="border rounded-md p-4 mb-4">
-      <h3 className="text-lg font-semibold">{name}</h3>
-      <p className="text-sm text-gray-700">{description}</p>
-      <p className="text-sm text-gray-500">
-        Willingness Score: {willingness_score}
-      </p>
     </div>
   );
 }
