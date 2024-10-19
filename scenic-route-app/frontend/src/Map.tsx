@@ -1,5 +1,5 @@
 // Map.tsx
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 declare global {
   interface Window {
     initMap?: () => void; // Solves some typescript error i dont understand ngl
