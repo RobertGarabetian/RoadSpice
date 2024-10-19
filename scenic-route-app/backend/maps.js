@@ -2,11 +2,11 @@
 
 let map;
 
-export function formatCityName(city) {
+function formatCityName(city) {
   return city.trim().replace(/[\s_]+/g, '+');
 }
 
-export function createURL(cityA, cityB) {
+function createURL(cityA, cityB) {
   const endpoint = 'https://maps.googleapis.com/maps/api/directions/json';
   return `${endpoint}?origin=${formatCityName(cityA)}&destination=${formatCityName(cityB)}&key=${import.meta.env.VITE_GOOGLE_MAPS_API}`; // Vite's way to access env variables
 }
