@@ -5,6 +5,7 @@ import { Slider } from "./components/ui/slider";
 import { Button } from "./components/ui/button";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+
 export default function TravelPlanner({ setResponseData }: any) {
   const [departureCity, setDepartureCity] = useState("");
   const [departureState, setDepartureState] = useState("");
@@ -37,6 +38,22 @@ export default function TravelPlanner({ setResponseData }: any) {
         `Hello! I am traveling from ${departureCity}, ${departureState} to ${arrivalCity}, ${arrivalState} by car. On a scale of 1 to 100, 100 being the most willing and 1 being the least willing to go out of my way for the scenic stops, I am at a ${scale}. Please provide a list of stops along the way, each with a short description, formatted as JSON. Use the following structure:
 
         {
+          "start": {
+            "name": "Stop Name",
+            "description": "Description of the stop.",
+            "coordinates": {
+                "lat": number,
+                "long": number
+            }
+          },
+          "finish": {
+            "name": "Stop Name",
+            "description": "Description of the stop.",
+            "coordinates": {
+                "lat": number,
+                "long": number
+            }
+          },
           "stops": [
             {
               "name": "Stop Name",
@@ -51,6 +68,7 @@ export default function TravelPlanner({ setResponseData }: any) {
           ]
         }
         
+      
         Please provide only the JSON output without additional text. Avoid adding any text before the first curly brace of the json and any text after the last curly brace of the json`
       );
 

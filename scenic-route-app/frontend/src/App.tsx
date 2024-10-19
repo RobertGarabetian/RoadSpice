@@ -21,6 +21,7 @@ interface Stop {
 const App = () => {
   const [responseData, setResponseData] = useState<ResponseData | null>(null);
 
+  console.log(responseData)
   // const mapRef = useRef(null);
   // const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API; // Access env variable
 
