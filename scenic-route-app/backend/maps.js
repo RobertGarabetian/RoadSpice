@@ -2,16 +2,16 @@
 
 let map;
 
-export function formatCityName(city) {
+function formatCityName(city) {
   return city.trim().replace(/[\s_]+/g, '+');
 }
 
-export function createURL(cityA, cityB) {
+function createURL(cityA, cityB) {
   const endpoint = 'https://maps.googleapis.com/maps/api/directions/json';
   return `${endpoint}?origin=${formatCityName(cityA)}&destination=${formatCityName(cityB)}&key=${import.meta.env.VITE_GOOGLE_MAPS_API}`; // Vite's way to access env variables
 }
 
-export async function getShortestRoute(cityA, cityB) {
+async function getShortestRoute(cityA, cityB) {
   const url = createURL(cityA, cityB);
   try {
     const response = await fetch(url);
@@ -30,7 +30,7 @@ export async function getShortestRoute(cityA, cityB) {
   }
 }
 
-export function loadGoogleMapsScript(apiKey, callback) {
+function loadGoogleMapsScript(apiKey, callback) {
   const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
 
   if (existingScript) {
@@ -45,9 +45,11 @@ export function loadGoogleMapsScript(apiKey, callback) {
   document.head.appendChild(script);
 }
 
-export function initializeMap(mapRef, center = { lat: 34.0522, lng: -118.2437 }) {
+function initializeMap(mapRef, center = { lat: 34.0522, lng: -118.2437 }) {
   map = new window.google.maps.Map(mapRef.current, {
     center,
     zoom: 7,
   });
 }
+
+module.exports = { initializeMap, getShortestRoute, loadGoogleMapsScript }
