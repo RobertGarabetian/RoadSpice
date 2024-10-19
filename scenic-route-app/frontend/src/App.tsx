@@ -7,20 +7,27 @@ import {
 } from '../../backend/maps';
 import TravelPlanner from './TravelPlanner';
 
+// declare global {
+//   interface Window{ // <-- Correct interface
+//     initMap: () => void; 
+//   }
+// }
+
 const App = () => {
   const mapRef = useRef(null);
   const apiKey = process.env.VITE_GOOGLE_MAPS_API; // Access env variable
 
   useEffect(() => {
     // Initialize the map after the script loads
-    window.initMap = () => initializeMap(mapRef);
+    // window.initMap = () => initializeMap(mapRef);
 
     // Load the Google Maps script
     loadGoogleMapsScript(apiKey, 'initMap');
   }, [apiKey]);
 
   const handleGetRoute = async () => {
-    const route = await getShortestRoute('Los Angeles', 'San Francisco');
+    // MAKE ME NOT HARD CODED
+    const route = await getShortestRoute('Los Angeles', 'San Francisco');  
     console.log('Route:', route);
   };
 
