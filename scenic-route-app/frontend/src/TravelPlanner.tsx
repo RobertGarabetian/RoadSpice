@@ -11,7 +11,6 @@ import { Label } from "./components/ui/label";
 import { Slider } from "./components/ui/slider";
 import { Button } from "./components/ui/button";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import StopsList from "./StopsList";
 
 export default function TravelPlanner({ setResponseData }: any) {
   const [departureCity, setDepartureCity] = useState("");
@@ -80,82 +79,70 @@ export default function TravelPlanner({ setResponseData }: any) {
     }
   };
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Plan Your Journey</CardTitle>
-          <CardDescription>
-            Balance speed and scenery for your perfect trip.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="departureCity">Departure City</Label>
-              <Input
-                id="departureCity"
-                value={departureCity}
-                onChange={(e) => setDepartureCity(e.target.value)}
-                placeholder="Enter departure city"
-                required
-              />
-            </div>
+    <form onSubmit={handleSubmit} className="space-y-6 p-4">
+      <div className="space-y-2">
+        <Label htmlFor="departureCity">Departure City</Label>
+        <Input
+          id="departureCity"
+          value={departureCity}
+          onChange={(e) => setDepartureCity(e.target.value)}
+          placeholder="Enter departure city"
+          required
+        />
+      </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="departureState">Departure State</Label>
-              <Input
-                id="departureState"
-                value={departureState}
-                onChange={(e) => setDepartureState(e.target.value)}
-                placeholder="Enter departure state"
-                required
-              />
-            </div>
+      <div className="space-y-2">
+        <Label htmlFor="departureState">Departure State</Label>
+        <Input
+          id="departureState"
+          value={departureState}
+          onChange={(e) => setDepartureState(e.target.value)}
+          placeholder="Enter departure state"
+          required
+        />
+      </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="arrivalCity">Arrival City</Label>
-              <Input
-                id="arrivalCity"
-                value={arrivalCity}
-                onChange={(e) => setArrivalCity(e.target.value)}
-                placeholder="Enter arrival city"
-                required
-              />
-            </div>
+      <div className="space-y-2">
+        <Label htmlFor="arrivalCity">Arrival City</Label>
+        <Input
+          id="arrivalCity"
+          value={arrivalCity}
+          onChange={(e) => setArrivalCity(e.target.value)}
+          placeholder="Enter arrival city"
+          required
+        />
+      </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="arrivalState">Arrival State</Label>
-              <Input
-                id="arrivalState"
-                value={arrivalState}
-                onChange={(e) => setArrivalState(e.target.value)}
-                placeholder="Enter arrival state"
-                required
-              />
-            </div>
+      <div className="space-y-2">
+        <Label htmlFor="arrivalState">Arrival State</Label>
+        <Input
+          id="arrivalState"
+          value={arrivalState}
+          onChange={(e) => setArrivalState(e.target.value)}
+          placeholder="Enter arrival state"
+          required
+        />
+      </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="preference">Speed vs. Scenery Preference</Label>
-              <Slider
-                id="preference"
-                min={1}
-                max={100}
-                step={1}
-                value={[speedPreference]}
-                onValueChange={(value) => setSpeedPreference(value[0])}
-              />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>More Scenic</span>
-                <span>Faster</span>
-              </div>
-            </div>
+      <div className="space-y-2">
+        <Label htmlFor="preference">Speed vs. Scenery Preference</Label>
+        <Slider
+          id="preference"
+          min={1}
+          max={100}
+          step={1}
+          value={[speedPreference]}
+          onValueChange={(value) => setSpeedPreference(value[0])}
+        />
+        <div className="flex justify-between text-sm text-muted-foreground">
+          <span>Scenic Route</span>
+          <span>Fast Route</span>
+        </div>
+      </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Planning..." : "Plan Journey"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Planning..." : "Plan Journey"}
+      </Button>
+    </form>
   );
 }
