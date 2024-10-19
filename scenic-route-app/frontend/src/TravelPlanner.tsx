@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import {
   Card,
@@ -12,62 +11,103 @@ import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import { Slider } from "./components/ui/slider";
 import { Button } from "./components/ui/button";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import {
+  EnhancedGenerateContentResponse,
+  GoogleGenerativeAI,
+} from "@google/generative-ai";
 
-const apiKey = import.meta.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
-
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-});
-const generationConfig = {
-  temperature: 1,
-  topP: 0.95,
-  topK: 64,
-  maxOutputTokens: 8192,
-  responseMimeType: "application/json",
-};
-async function run(
-  departure_city: string,
-  departure_state: string,
-  arrival_city: string,
-  arrival_state: string,
-  scale: number
-) {
-  const chatSession = model.startChat({
-    generationConfig,
-    history: [
-      {
-        role: "user",
-        parts: [{ text: "say hi" }],
-      },
-    ],
-  });
-
-  const result = await chatSession.sendMessage(
-    `Hello! I am traveling from ${departure_city}, ${departure_state} to ${arrival_city}, ${arrival_state} by car. On a scale of 1 to 100, 100 being the most willing and 1 being the least willing to go out of my way for the scenic stops, I am at a ${scale}. Can you give me a list of stops along the way and a short description of each.`
-  );
-  console.log(result.response.text());
+interface Stop {
+  name: string;
+  description: string;
+  willingness_score: number;
 }
 
-export default function TravelPlanner() {
-  const [departure, setDeparture] = useState("");
-  const [arrival, setArrival] = useState("");
-  const [speedPreference, setSpeedPreference] = useState(50);
+interface ResponseData {
+  stops: Stop[];
+}
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    let departure_city: string = "";
-    let departure_state: string = "";
-    let arrival_city: string = "";
-    let arrival_state: string = "";
-    let scale = 10;
-    run(departure_city, departure_state, arrival_city, arrival_state, scale);
-    console.log("Form submitted", { departure, arrival, speedPreference });
+export default function TravelPlanner({ setResponseData }: any) {
+  const [departureCity, setDepartureCity] = useState("");
+  const [departureState, setDepartureState] = useState("");
+  const [arrivalCity, setArrivalCity] = useState("");
+  const [arrivalState, setArrivalState] = useState("");
+  const [speedPreference, setSpeedPreference] = useState(50);
+  const [loading, setLoading] = useState(false);
+
+  const apiKey = import.meta.env.GEMINI_API; // Make sure to set your API key in your .env file
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+  });
+
+  const generationConfig = {
+    temperature: 1,
+    topP: 0.95,
+    topK: 64,
+    maxOutputTokens: 8192,
+    responseMimeType: "application/json",
   };
 
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+
+    const scale = speedPreference;
+
+    if (!departureCity || !departureState || !arrivalCity || !arrivalState) {
+      alert("Please fill in all the fields.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const chatSession = model.startChat({
+        generationConfig,
+        history: [
+          {
+            role: "user",
+            parts: [{ text: "say hi" }],
+          },
+        ],
+      });
+
+      const result = await model.generateContent(
+        `Hello! I am traveling from ${departureCity}, ${departureState} to ${arrivalCity}, ${arrivalState} by car. On a scale of 1 to 100, 100 being the most willing and 1 being the least willing to go out of my way for the scenic stops, I am at a ${scale}. Please provide a list of stops along the way, each with a short description, formatted as JSON. Use the following structure:
+
+        {
+          "stops": [
+            {
+              "name": "Stop Name",
+              "description": "Description of the stop.",
+              "willingness_score": number
+            },
+            // ... more stops ...
+          ]
+        }
+        
+        Please provide only the JSON output without additional text. Avoid adding any text before the first curly brace of the json and any text after the last curly brace of the json`
+      );
+
+      const response = result.response.text();
+      console.log(response);
+      try {
+        const jsonContent = response.replace(/`/g, "").trim();
+        console.log(jsonContent);
+        const data = JSON.parse(jsonContent);
+
+        setResponseData(data);
+      } catch (e) {
+        console.log(e);
+      }
+    } catch (error) {
+      console.error("Failed to parse response:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Plan Your Journey</CardTitle>
@@ -78,23 +118,45 @@ export default function TravelPlanner() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="departure">Departure</Label>
+              <Label htmlFor="departureCity">Departure City</Label>
               <Input
-                id="departure"
-                value={departure}
-                onChange={(e) => setDeparture(e.target.value)}
-                placeholder="Enter departure location"
+                id="departureCity"
+                value={departureCity}
+                onChange={(e) => setDepartureCity(e.target.value)}
+                placeholder="Enter departure city"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="arrival">Arrival</Label>
+              <Label htmlFor="departureState">Departure State</Label>
               <Input
-                id="arrival"
-                value={arrival}
-                onChange={(e) => setArrival(e.target.value)}
-                placeholder="Enter arrival location"
+                id="departureState"
+                value={departureState}
+                onChange={(e) => setDepartureState(e.target.value)}
+                placeholder="Enter departure state"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="arrivalCity">Arrival City</Label>
+              <Input
+                id="arrivalCity"
+                value={arrivalCity}
+                onChange={(e) => setArrivalCity(e.target.value)}
+                placeholder="Enter arrival city"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="arrivalState">Arrival State</Label>
+              <Input
+                id="arrivalState"
+                value={arrivalState}
+                onChange={(e) => setArrivalState(e.target.value)}
+                placeholder="Enter arrival state"
                 required
               />
             </div>
@@ -103,7 +165,7 @@ export default function TravelPlanner() {
               <Label htmlFor="preference">Speed vs. Scenery Preference</Label>
               <Slider
                 id="preference"
-                min={0}
+                min={1}
                 max={100}
                 step={1}
                 value={[speedPreference]}
@@ -114,14 +176,25 @@ export default function TravelPlanner() {
                 <span>Faster</span>
               </div>
             </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Planning..." : "Plan Journey"}
+            </Button>
           </form>
         </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full">
-            Plan Journey
-          </Button>
-        </CardFooter>
       </Card>
+    </div>
+  );
+}
+
+function StopCard({ name, description, willingness_score }: Stop) {
+  return (
+    <div className="border rounded-md p-4 mb-4">
+      <h3 className="text-lg font-semibold">{name}</h3>
+      <p className="text-sm text-gray-700">{description}</p>
+      <p className="text-sm text-gray-500">
+        Willingness Score: {willingness_score}
+      </p>
     </div>
   );
 }
