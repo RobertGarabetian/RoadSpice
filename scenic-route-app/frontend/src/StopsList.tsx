@@ -1,4 +1,4 @@
-import { ScrollArea } from "./components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "./components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { Stop } from "./types";
 const containerVariants = {
@@ -26,7 +26,7 @@ export default function StopsList({ responseData }: StopsListProps) {
     <ScrollArea className="h-96 w-full">
       {responseData?.stops ? (
         <motion.ul
-          className="space-y-4"
+          className="flex flex-row space-x-4 h-full "
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -34,12 +34,12 @@ export default function StopsList({ responseData }: StopsListProps) {
           {responseData.stops.map((stop: Stop, index: number) => (
             <motion.li
               key={index}
-              className="border-b pb-4 last:border-b-0"
+              className="border-b p-4 last:border-b-0 w-1/5 h-full border border-slate-700 rounded"
               variants={itemVariants}
             >
               {" "}
               <h3 className="text-lg font-semibold">{stop.name}</h3>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-muted-foreground">
                 {stop.description}
               </p>
               {/* <Badge variant={getWillingnessVariant(stop.willingness_score)}>
@@ -53,6 +53,7 @@ export default function StopsList({ responseData }: StopsListProps) {
           No stops to display yet. Plan your journey to see the list of stops.
         </p>
       )}
+      <ScrollBar orientation="vertical" />
     </ScrollArea>
   );
 }

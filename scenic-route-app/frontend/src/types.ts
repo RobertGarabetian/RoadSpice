@@ -17,7 +17,9 @@ export interface ResponseData {
           long: number
       }
     },
-    stops: Stop[]
+    stops: Stop[],
+    travel_time: number,
+    direct_time:  number
 }
 export interface Stop {
   name: string;

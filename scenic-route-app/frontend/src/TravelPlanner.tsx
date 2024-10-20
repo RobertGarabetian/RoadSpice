@@ -37,8 +37,20 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
       setLoading(true);
 
       const result = await model.generateContent(
-        `Hello! I am traveling from ${departureCity}, ${departureState} to ${arrivalCity}, ${arrivalState} by car. On a scale of 1 to 100, 100 being the most willing and 1 being the least willing to go out of my way for the scenic stops, I am at a ${scale}. Please provide a list of stops along the way, each with a short description, formatted as JSON. Use the following structure:
+        `Plan a road trip from ${departureCity}, ${departureState} to ${arrivalCity}, ${arrivalState} with a detour preference of ${scale} (0-100).
 
+        *   **Start Location:** [Specific starting address or city, state]
+        *   **End Location:** [Specific destination address or city, state]
+        *   **Detour Value:** [Integer between 0 and 100, where 0 indicates maximum willingness for detours and attractions, and 100 indicates minimizing travel time and prioritizing the fastest route.]
+        
+
+        1.  **Estimated Travel Time (Direct):**  Estimate the travel time if taking the most direct route without detours.
+        2.  **Estimated Travel Time (with Detours):** Estimate the travel time considering the Detour Value. This should be equal to or greater than the direct travel time.
+        
+        Please provide the response EXACTLY in the JSON format show below. There should be NO text outside of the JSON.
+
+        
+        
         {
           "start": {
             "name": "Stop Name",
@@ -71,7 +83,9 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
               }
             },
             // ... more stops ...
-          ]
+          ],
+          "travelTime": "travel time",
+          "directTime": "direct route time",
         }
         
       
