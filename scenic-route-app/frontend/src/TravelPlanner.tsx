@@ -4,9 +4,11 @@ import { Label } from "./components/ui/label";
 import { Slider } from "./components/ui/slider";
 import { Button } from "./components/ui/button";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
-
-export default function TravelPlanner({ setResponseData }: any) {
+import { ResponseData } from "./types";
+interface TravelPlannerProps {
+  setResponseData: (data: ResponseData | null) => void;
+}
+export default function TravelPlanner( {setResponseData}: TravelPlannerProps) {
   const [departureCity, setDepartureCity] = useState("");
   const [departureState, setDepartureState] = useState("");
   const [arrivalCity, setArrivalCity] = useState("");
@@ -21,8 +23,9 @@ export default function TravelPlanner({ setResponseData }: any) {
   const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
   });
-
-  const handleSubmit = async (event: any) => {
+  
+  
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const scale = speedPreference;
 
@@ -40,6 +43,7 @@ export default function TravelPlanner({ setResponseData }: any) {
         {
           "start": {
             "name": "Stop Name",
+            "state": "State name",
             "description": "Description of the stop.",
             "coordinates": {
                 "lat": number,
@@ -48,6 +52,7 @@ export default function TravelPlanner({ setResponseData }: any) {
           },
           "finish": {
             "name": "Stop Name",
+            "state": "State name",
             "description": "Description of the stop.",
             "coordinates": {
                 "lat": number,
@@ -57,6 +62,7 @@ export default function TravelPlanner({ setResponseData }: any) {
           "stops": [
             {
               "name": "Stop Name",
+              "state": "State name",
               "description": "Description of the stop.",
               "willingness_score": number,
               "coordinates": {
@@ -73,7 +79,6 @@ export default function TravelPlanner({ setResponseData }: any) {
       );
 
       const response = result.response.text();
-      console.log(response);
       try {
         const jsonContent = response.replace(/`/g, "").trim();
         console.log(jsonContent);

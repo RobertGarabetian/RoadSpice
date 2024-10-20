@@ -9,35 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "./components/ui/card";
-interface ResponseData {
-  stops: Stop[];
-}
-interface Stop {
-  name: string;
-  description: string;
-  willingness_score: number;
-}
+import { ResponseData } from "./types";
+
 
 const App = () => {
   const [responseData, setResponseData] = useState<ResponseData | null>(null);
-
-  console.log(responseData)
-  // const mapRef = useRef(null);
-  // const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API; // Access env variable
-
-  // useEffect(() => {
-  //   // Initialize the map after the script loads
-  //   // window.initMap = () => initializeMap(mapRef);
-
-  //   // Load the Google Maps script
-  //   loadGoogleMapsScript(apiKey, "initMap");
-  // }, [apiKey]);
-
-  // const handleGetRoute = async () => {
-  //   // MAKE ME NOT HARD CODED
-  //   const route = await getShortestRoute("Los Angeles", "San Francisco");
-  //   console.log("Route:", route);
-  // };
 
   return (
     <div className="min-h-screen bg-background text-foreground w-screen">
