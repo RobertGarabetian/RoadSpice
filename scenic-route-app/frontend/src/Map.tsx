@@ -1,14 +1,24 @@
 // Map.tsx
 import { useEffect, useRef } from "react";
-
+import { ResponseData } from "./types";
 declare global {
   interface Window {
     initMap?: () => void; // TypeScript workaround for attaching initMap to the window
-    google: any;
+    google: any
   }
 }
+interface MapProps {
+  locationInfo: ResponseData | null
+}
+// 
+function formatCity(cityName: string) {
+  const formattedCity = cityName.trim().replace(' ','+')
+  console.log(formattedCity)
 
-function Map() {
+  return formattedCity;
+}
+
+const Map: React.FC<MapProps> = ({ locationInfo }) => {
   const mapRef = useRef<HTMLDivElement>(null); // Reference to the map container
   const apiKEY = import.meta.env.VITE_GOOGLE_MAPS_API; // API Key from environment variables
 
@@ -35,7 +45,7 @@ function Map() {
           });
 
           // Call loadDirections to plot directions between two cities
-          loadDirections(map, "Los Angeles, CA", "San Francisco, CA");
+          loadDirections(map, `${locationInfo?.start.name}, ${locationInfo?.start.state}`, `${locationInfo?.finish.name}, ${locationInfo?.finish.state}`);
         }
       };
 
@@ -52,11 +62,14 @@ function Map() {
           zoom: 6,
         });
 
+        console.log(locationInfo?.start.name);
+        console.log(locationInfo?.finish.name);
         // Call loadDirections to plot directions
-        loadDirections(map, "Los+Angeles", "San+Francisco");
+        loadDirections(map, formatCity(locationInfo?.start.name as string), formatCity(locationInfo?.finish.name as string));
+        // loadDirections(map, "Los+Angeles", "San+Francisco");
       }
     }
-  }, [apiKEY]);
+  }, [locationInfo]);
 
   return <div ref={mapRef} style={{ width: "100%", height: "500px" }} />;
 }
@@ -76,7 +89,7 @@ function loadDirections(map: any, origin: string, destination: string) {
       destination: destination,
       travelMode: window.google.maps.TravelMode.DRIVING,
     },
-    (result: any, status: string) => {
+    (result: string, status: string) => {
       if (status === "OK") {
         console.log("Directions request succeeded");
         directionsRenderer.setDirections(result);
