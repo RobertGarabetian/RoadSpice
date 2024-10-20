@@ -10,15 +10,29 @@ import {
   CardTitle,
 } from "./components/ui/card";
 import { ResponseData } from "./types";
-
+import ErrorPopup from "./ErrorPopup";
 
 const App = () => {
   const [responseData, setResponseData] = useState<ResponseData | null>(null);
+  const [error, setError] = useState<string | null>(null); // Error state
+
+  const handleError = (errorMessage: string) => {
+    setError(errorMessage); // Set the error message
+    console.log(error);
+  };
+
+  const handleCloseError = () => {
+    setError(null); // Close the error popup
+    console.log(error);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground w-screen">
       <div className="container mx-auto p-4">
         <h1 className="text-4xl font-bold mb-6">Travel Route Planner</h1>
+
+        {error ? <ErrorPopup message={error} onClose={handleCloseError} /> : null}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-1 md:row-span-1">
             <Card className="">
@@ -33,15 +47,17 @@ const App = () => {
               </CardContent>
             </Card>
           </div>
+
           <div className="md:col-span-2 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="text-3xl">Route Map</CardTitle>
               </CardHeader>
               <CardContent className="h-auto">
-                <Map locationInfo={responseData} />
+                <Map locationInfo={responseData} onError={handleError} />
               </CardContent>
             </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="text-3xl">Stops List</CardTitle>

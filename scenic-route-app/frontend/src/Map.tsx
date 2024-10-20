@@ -1,107 +1,110 @@
-// Map.tsx
 import { useEffect, useRef } from "react";
 import { ResponseData, Stop } from "./types";
+
 declare global {
   interface Window {
     initMap?: () => void; // TypeScript workaround for attaching initMap to the window
     google: any;
   }
 }
+
 interface MapProps {
   locationInfo: ResponseData | null;
+  onError: (errorMessage: string) => void; // Add onError prop
 }
-//
-// function formatCity(cityName: string) {
-//   const formattedCity = cityName.trim().replace(" ", "+");
-//   console.log(formattedCity);
-//   return formattedCity;
-// }
+
 function formatCity(cityName: string) {
   const formattedCity = cityName.trim().replace(/\s+/g, "+");
   return formattedCity;
 }
 
-const Map: React.FC<MapProps> = ({ locationInfo }) => {
+const Map: React.FC<MapProps> = ({ locationInfo, onError }) => {
   const mapRef = useRef<HTMLDivElement>(null); // Reference to the map container
   const apiKEY = import.meta.env.VITE_GOOGLE_MAPS_API; // API Key from environment variables
 
-  useEffect(() => {
-    console.log("Entered useEffect in Map.tsx");
+  // Function to initialize the map
+  const initializeMap = () => {
+    if (mapRef.current) {
+      const map = new window.google.maps.Map(mapRef.current, {
+        center: { lat: 36.7783, lng: -119.4179 }, // Centered on California
+        zoom: 6,
+      });
 
-    // Check if the Google Maps script is already added to avoid duplicates
-    if (!document.querySelector("#google-maps-script")) {
+      console.log("Map initialized without directions");
+
+      // Plot directions if locationInfo is available
+      if (locationInfo?.start && locationInfo.finish) {
+        console.log("Location info available, plotting directions...");
+        loadDirections(
+          map,
+          formatCity(`${locationInfo.start.name}, ${locationInfo.start.state}`),
+          formatCity(`${locationInfo.finish.name}, ${locationInfo.finish.state}`),
+          locationInfo.stops || [],
+          onError
+        );
+      } else {
+        console.log("No valid location info, displaying blank map.");
+      }
+    }
+  };
+
+  // Function to load Google Maps script only once
+  const loadGoogleMapsScript = async () => {
+    if (!window.google) {
       console.log("Trying to connect to the Maps API...");
 
-      const script = document.createElement("script");
+      const script = await document.createElement("script");
       script.id = "google-maps-script";
       script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKEY}&callback=initMap`;
       script.async = true;
       script.defer = true;
 
-      // Attach the initMap function to the window object
-      window.initMap = () => {
-        console.log("Initializing map...");
-        if (mapRef.current) {
-          const map = new window.google.maps.Map(mapRef.current, {
-            center: { lat: 36.7783, lng: -119.4179 }, // Centered on California
-            zoom: 6,
-          });
-
-          // Call loadDirections to plot directions between two cities
-          loadDirections(
-            map,
-            `${locationInfo?.start.name}, ${locationInfo?.start.state}`,
-            `${locationInfo?.finish.name}, ${locationInfo?.finish.state}`
-          );
-        }
-      };
-
-      script.onload = () => console.log("Google Maps script loaded!");
+      window.initMap = initializeMap;
       script.onerror = (error) =>
         console.error("Google Maps script failed to load:", error);
 
       document.head.appendChild(script);
     } else {
-      console.log(
-        "Google Maps script already exists, initializing map directly..."
-      );
-      // If the script already exists, initialize the map directly
-      if (window.google && mapRef.current) {
-        const map = new window.google.maps.Map(mapRef.current, {
-          center: { lat: 36.7783, lng: -119.4179 },
-          zoom: 6,
-        });
+      console.log("Google Maps script already loaded.");
+      initializeMap();
+    }
+  };
 
-        console.log(locationInfo?.start.name);
-        console.log(locationInfo?.finish.name);
-        // Call loadDirections to plot directions
-        if (locationInfo?.start && locationInfo.finish && locationInfo.stops) {
-          loadDirections(
-            map,
-            formatCity(
-              `${locationInfo.start.name}, ${locationInfo.start.state}`
-            ),
-            formatCity(
-              `${locationInfo.finish.name}, ${locationInfo.finish.state}`
-            ),
-            locationInfo.stops
-          );
-        }
-        // loadDirections(map, "Los+Angeles", "San+Francisco");
+  // Load the Google Maps script on initial render only
+  useEffect(() => {
+    loadGoogleMapsScript();
+  }, []); // Empty dependency array to ensure it runs once on mount
+
+  // Re-render the map when locationInfo changes
+  useEffect(() => {
+    if (window.google && mapRef.current) {
+      const map = new window.google.maps.Map(mapRef.current, {
+        center: { lat: 36.7783, lng: -119.4179 }, // Centered on California
+        zoom: 6,
+      });
+
+      if (locationInfo?.start && locationInfo.finish) {
+        loadDirections(
+          map,
+          formatCity(`${locationInfo.start.name}, ${locationInfo.start.state}`),
+          formatCity(`${locationInfo.finish.name}, ${locationInfo.finish.state}`),
+          locationInfo.stops || [],
+          onError
+        );
       }
     }
-  }, [locationInfo]);
+  }, [locationInfo]); // This runs when locationInfo changes
 
   return <div ref={mapRef} style={{ width: "100%", height: "500px" }} />;
 };
 
 // Function to load directions using DirectionsService and DirectionsRenderer
-
 function loadDirections(
   map: any,
   origin: string,
   destination: string,
-  stops: Stop[] = []
+  stops: Stop[] = [],
+  onError: any
 ) {
   const directionsService = new window.google.maps.DirectionsService();
   const directionsRenderer = new window.google.maps.DirectionsRenderer();
@@ -129,8 +132,20 @@ function loadDirections(
     ) => {
       if (status === "OK") {
         directionsRenderer.setDirections(result);
+      } else if (status === "NOT_FOUND") {
+        console.log("Error caught: Locations not found");
+        onError(
+          "Locations were not found: please make sure their names were spelled correctly and exist."
+        );
+      } else if (status === "ZERO_RESULTS") {
+        console.log("Error caught: No route found");
+        onError("Route not found: this route is not possible.");
       } else {
-        console.error(`Directions request failed: ${status}`);
+        const errorMessage = `Directions request failed: ${status}`;
+        console.error(errorMessage);
+        onError(
+          "Sorry! There seemed to be an unknown issue with your request. Please try again."
+        );
       }
     }
   );
