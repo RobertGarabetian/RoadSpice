@@ -8,7 +8,7 @@ import { ResponseData } from "./types";
 interface TravelPlannerProps {
   setResponseData: (data: ResponseData | null) => void;
 }
-export default function TravelPlanner( {setResponseData}: TravelPlannerProps) {
+export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
   const [departureCity, setDepartureCity] = useState("");
   const [departureState, setDepartureState] = useState("");
   const [arrivalCity, setArrivalCity] = useState("");
@@ -23,8 +23,7 @@ export default function TravelPlanner( {setResponseData}: TravelPlannerProps) {
   const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
   });
-  
-  
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const scale = speedPreference;
@@ -95,7 +94,7 @@ export default function TravelPlanner( {setResponseData}: TravelPlannerProps) {
     }
   };
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-4">
+    <form onSubmit={handleSubmit} className="space-y-6 p-4" autoComplete="off">
       <div className="space-y-2">
         <Label htmlFor="departureCity">Departure City</Label>
         <Input
