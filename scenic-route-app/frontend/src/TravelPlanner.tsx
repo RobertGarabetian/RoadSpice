@@ -42,7 +42,8 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
         *   **Start Location:** [Specific starting address or city, state]
         *   **End Location:** [Specific destination address or city, state]
         *   **Detour Value:** [Integer between 0 and 100, where 0 indicates maximum willingness for detours and attractions, and 100 indicates minimizing travel time and prioritizing the fastest route.]
-        
+        For example, if I give the Detour Value a score of 100, I should be trying to get there in miminum type with only a couple stops
+        If I give the Detour Value a score of 0, I am trying to see as many stops as I can along the way and I am super willing to waste some time.
 
         1.  **Estimated Travel Time (Direct):**  Estimate the travel time if taking the most direct route without detours.
         2.  **Estimated Travel Time (with Detours):** Estimate the travel time considering the Detour Value. This should be equal to or greater than the direct travel time.

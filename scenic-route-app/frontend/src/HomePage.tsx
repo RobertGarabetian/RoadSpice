@@ -77,7 +77,7 @@ const HomePage = () => {
               <CardHeader>
                 <CardTitle className="text-3xl">Travel Time</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="">
                 <TimeCard responseData={responseData} />
               </CardContent>
             </Card>

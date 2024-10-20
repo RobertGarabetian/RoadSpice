@@ -18,8 +18,8 @@ export interface ResponseData {
       }
     },
     stops: Stop[],
-    travel_time: number,
-    direct_time:  number
+    travelTime: number,
+    directTime:  number
 }
 export interface Stop {
   name: string;

@@ -26,7 +26,7 @@ export default function StopsList({ responseData }: StopsListProps) {
     <ScrollArea className="h-96 w-full">
       {responseData?.stops ? (
         <motion.ul
-          className="flex flex-row space-x-4 h-full "
+          className="flex flex-col space-y-4 h-full "
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -34,7 +34,7 @@ export default function StopsList({ responseData }: StopsListProps) {
           {responseData.stops.map((stop: Stop, index: number) => (
             <motion.li
               key={index}
-              className="border-b p-4 last:border-b-0 w-1/5 h-full border border-slate-700 rounded"
+              className="border-b p-4 last:border-b-0 h-1/3 w-full border border-slate-700 rounded"
               variants={itemVariants}
             >
               {" "}
