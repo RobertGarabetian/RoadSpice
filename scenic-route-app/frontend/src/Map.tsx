@@ -1,26 +1,30 @@
 // Map.tsx
-import { useEffect, useRef } from "react";
-import { ResponseData } from "./types";
+import { useEffect, useRef, useState } from "react";
+import { ResponseData, Stop } from "./types";
 declare global {
   interface Window {
     initMap?: () => void; // TypeScript workaround for attaching initMap to the window
-    google: any
+    google: any;
   }
 }
 interface MapProps {
-  locationInfo: ResponseData | null
+  locationInfo: ResponseData | null;
 }
-// 
+//
+// function formatCity(cityName: string) {
+//   const formattedCity = cityName.trim().replace(" ", "+");
+//   console.log(formattedCity);
+//   return formattedCity;
+// }
 function formatCity(cityName: string) {
-  const formattedCity = cityName.trim().replace(' ','+')
-  console.log(formattedCity)
-
+  const formattedCity = cityName.trim().replace(/\s+/g, "+");
   return formattedCity;
 }
 
 const Map: React.FC<MapProps> = ({ locationInfo }) => {
   const mapRef = useRef<HTMLDivElement>(null); // Reference to the map container
   const apiKEY = import.meta.env.VITE_GOOGLE_MAPS_API; // API Key from environment variables
+  const [selectedWaypoints, setSelectedWaypoints] = useState<string[]>([]);
 
   useEffect(() => {
     console.log("Entered useEffect in Map.tsx");
@@ -45,16 +49,23 @@ const Map: React.FC<MapProps> = ({ locationInfo }) => {
           });
 
           // Call loadDirections to plot directions between two cities
-          loadDirections(map, `${locationInfo?.start.name}, ${locationInfo?.start.state}`, `${locationInfo?.finish.name}, ${locationInfo?.finish.state}`);
+          loadDirections(
+            map,
+            `${locationInfo?.start.name}, ${locationInfo?.start.state}`,
+            `${locationInfo?.finish.name}, ${locationInfo?.finish.state}`
+          );
         }
       };
 
       script.onload = () => console.log("Google Maps script loaded!");
-      script.onerror = (error) => console.error("Google Maps script failed to load:", error);
+      script.onerror = (error) =>
+        console.error("Google Maps script failed to load:", error);
 
       document.head.appendChild(script);
     } else {
-      console.log("Google Maps script already exists, initializing map directly...");
+      console.log(
+        "Google Maps script already exists, initializing map directly..."
+      );
       // If the script already exists, initialize the map directly
       if (window.google && mapRef.current) {
         const map = new window.google.maps.Map(mapRef.current, {
@@ -65,33 +76,59 @@ const Map: React.FC<MapProps> = ({ locationInfo }) => {
         console.log(locationInfo?.start.name);
         console.log(locationInfo?.finish.name);
         // Call loadDirections to plot directions
-        loadDirections(map, formatCity(locationInfo?.start.name as string), formatCity(locationInfo?.finish.name as string));
+        if (locationInfo?.start && locationInfo.finish && locationInfo.stops) {
+          loadDirections(
+            map,
+            formatCity(
+              `${locationInfo.start.name}, ${locationInfo.start.state}`
+            ),
+            formatCity(
+              `${locationInfo.finish.name}, ${locationInfo.finish.state}`
+            ),
+            locationInfo.stops
+          );
+        }
         // loadDirections(map, "Los+Angeles", "San+Francisco");
       }
     }
   }, [locationInfo]);
 
   return <div ref={mapRef} style={{ width: "100%", height: "500px" }} />;
-}
+};
 
 // Function to load directions using DirectionsService and DirectionsRenderer
-function loadDirections(map: any, origin: string, destination: string) {
+
+function loadDirections(
+  map: any,
+  origin: string,
+  destination: string,
+  stops: Stop[] = []
+) {
   const directionsService = new window.google.maps.DirectionsService();
   const directionsRenderer = new window.google.maps.DirectionsRenderer();
 
   // Attach the renderer to the map
   directionsRenderer.setMap(map);
 
+  const waypts: google.maps.DirectionsWaypoint[] = stops.map((stop) => ({
+    location: `${stop.name}, ${stop.state}`, // Include state for specificity
+    stopover: true,
+  }));
+
   // Request directions between the origin and destination
   directionsService.route(
     {
       origin: origin,
       destination: destination,
+      waypoints: waypts,
+      optimizeWaypoints: true,
       travelMode: window.google.maps.TravelMode.DRIVING,
     },
-    (result: string, status: string) => {
+    (
+      result: google.maps.DirectionsResult,
+      status: google.maps.DirectionsStatus
+    ) => {
       if (status === "OK") {
-        console.log("Directions request succeeded");
         directionsRenderer.setDirections(result);
       } else {
         console.error(`Directions request failed: ${status}`);

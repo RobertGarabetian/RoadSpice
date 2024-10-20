@@ -61,6 +61,7 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
           "stops": [
             {
               "name": "Stop Name",
+              "city": "City Name",
               "state": "State name",
               "description": "Description of the stop.",
               "willingness_score": number,

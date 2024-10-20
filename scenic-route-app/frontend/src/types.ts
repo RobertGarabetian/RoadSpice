@@ -17,37 +17,14 @@ export interface ResponseData {
           long: number
       }
     },
-    stops: [
-      {
-        name: string,
-        state: string,
-        description: string,
-        coordinates: {
-          lat: number,
-          long: number
-      }
-      },
-    ]
-}
-export interface ResponseData {
-    stops: [
-    {
-        name: string,
-        state: string,
-        description: string,
-        coordinates: {
-          lat: number,
-          long: number
-      }
-    },
-];
+    stops: Stop[]
 }
 export interface Stop {
-    name: string;
-    state: string;
-    description: string;
-    coordinates: {
-        lat: number;
-        long: number;
-};
+  name: string;
+  state: string;
+  description: string;
+  coordinates: {
+      lat: number;
+      long: number;
+  };
 }

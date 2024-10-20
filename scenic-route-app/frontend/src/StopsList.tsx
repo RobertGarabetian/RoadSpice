@@ -1,6 +1,6 @@
 import { ScrollArea } from "./components/ui/scroll-area";
 import { motion } from "framer-motion";
-
+import { Stop } from "./types";
 const containerVariants = {
   hidden: {},
   visible: {
@@ -14,15 +14,7 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 };
-interface Stop {
-  name: string;
-  state: string;
-  description: string;
-  coordinates: {
-    lat: number;
-    long: number;
-  };
-}
+
 interface StopsListProps {
   responseData: {
     stops: Stop[];
