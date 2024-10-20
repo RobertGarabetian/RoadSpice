@@ -24,7 +24,6 @@ function formatCity(cityName: string) {
 const Map: React.FC<MapProps> = ({ locationInfo }) => {
   const mapRef = useRef<HTMLDivElement>(null); // Reference to the map container
   const apiKEY = import.meta.env.VITE_GOOGLE_MAPS_API; // API Key from environment variables
-  const [selectedWaypoints, setSelectedWaypoints] = useState<string[]>([]);
 
   useEffect(() => {
     console.log("Entered useEffect in Map.tsx");
