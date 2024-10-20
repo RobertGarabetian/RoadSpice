@@ -159,11 +159,14 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
         <Label htmlFor="preference">Speed vs. Scenery Preference</Label>
         <Slider
           id="preference"
-          min={1}
+          min={0}
           max={100}
           step={1}
           value={[speedPreference]}
-          onValueChange={(value) => setSpeedPreference(value[0])}
+          onValueChange={(value) => {
+            setSpeedPreference(value[0]);
+            console.log(value[0]);
+          }}
         />
         <div className="flex justify-between text-sm text-muted-foreground">
           <span>Scenic Route</span>
