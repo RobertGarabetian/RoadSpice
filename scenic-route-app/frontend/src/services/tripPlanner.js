@@ -1,1 +1,0 @@
-// Plans the stops for the whole trip
