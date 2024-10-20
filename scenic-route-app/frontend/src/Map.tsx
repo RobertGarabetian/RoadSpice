@@ -1,5 +1,5 @@
 // Map.tsx
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { ResponseData, Stop } from "./types";
 declare global {
   interface Window {
