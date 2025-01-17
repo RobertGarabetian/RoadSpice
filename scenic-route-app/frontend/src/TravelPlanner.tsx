@@ -24,6 +24,17 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
     model: "gemini-1.5-flash",
   });
 
+  // GEMINI somtimes adds 'json' as the first string in the response, this makes sure only a valid json is used by the program
+  const aiToJSON = (response: string) => {
+    const jsonContent = response.replace(/`/g, "").trim();
+    try {
+      const start = jsonContent.indexOf("{");
+      return JSON.parse(jsonContent.substring(start))
+    } catch (e) {
+      throw new Error("Invalid JSON format");
+    }
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const scale = speedPreference;
@@ -95,11 +106,7 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
 
       const response = result.response.text();
       try {
-        const jsonContent = response.replace(/`/g, "").trim();
-        console.log(jsonContent);
-        const data = JSON.parse(jsonContent);
-
-        setResponseData(data);
+        setResponseData(aiToJSON(response));
       } catch (e) {
         console.log(e);
       }
