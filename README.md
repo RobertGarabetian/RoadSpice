@@ -1,6 +1,5 @@
 # **RoadSpice**
-
-https://hackathonproject-iota.vercel.app/
+roadspice-iota.vercel.app
 
 ## Overview
 RoadSpice is software that makes road trips more enjoyable by suggesting stops along the route. Users can set their preferences for how scenic or fast they'd like their experiences to be.
