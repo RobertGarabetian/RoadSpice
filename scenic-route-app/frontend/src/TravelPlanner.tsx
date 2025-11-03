@@ -21,7 +21,7 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
   const genAI = new GoogleGenerativeAI(apiKey);
 
   const model = genAI.getGenerativeModel({
-    model: "models/gemini-1.5-flash",
+    model: "models/gemini-2.5-flash",
   });
 
   // GEMINI somtimes adds 'json' as the first string in the response, this makes sure only a valid json is used by the program
@@ -29,11 +29,11 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
     const jsonContent = response.replace(/`/g, "").trim();
     try {
       const start = jsonContent.indexOf("{");
-      return JSON.parse(jsonContent.substring(start))
-    } catch (e) {
+      return JSON.parse(jsonContent.substring(start));
+    } catch {
       throw new Error("Invalid JSON format");
     }
-  }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
