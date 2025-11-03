@@ -21,7 +21,7 @@ export default function TravelPlanner({ setResponseData }: TravelPlannerProps) {
   const genAI = new GoogleGenerativeAI(apiKey);
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash-latest",
+    model: "models/gemini-1.5-flash",
   });
 
   // GEMINI somtimes adds 'json' as the first string in the response, this makes sure only a valid json is used by the program
